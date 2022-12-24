@@ -37,6 +37,8 @@ class _MyHomePageState extends State<MyHomePage> {
     CheckBoxState(title: "History"),
     CheckBoxState(title: "Facebook"),
   ];
+  final allNotification = CheckBoxState(title: "Allow Notifications");
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,23 +47,38 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Column(
         children: [
-          // buildSingleCheckbox(notification),
-
-          ...notification.map().toList()
+          // buildSingleCheckbox(),
+          buildGroupCheckbox(allNotification),
+          ...notification.map(buildSingleCheckbox).toList()
         ],
       ),
     );
   }
 
-  Widget buildSingleCheckbox(Checkbox checkbox) {
-    return CheckboxListTile(
+  Widget buildSingleCheckbox(CheckBoxState checkbox) => CheckboxListTile(
         controlAffinity: ListTileControlAffinity.leading,
         value: checkbox.value,
-        title: Text("Messages"),
-        onChanged: (value) {
-          setState(() {
-            this.value = value!;
-          });
-        });
+        title: Text(checkbox.title),
+        onChanged: (bool? value) => setState(() {
+          checkbox.value = value!;
+          allNotification.value =
+              notification.every((element) => element.value);
+        }),
+      );
+
+  tooglePressed(value) {
+    if (value == null) return;
+    setState(() {
+      allNotification.value = value!;
+      notification.forEach((element) {
+        element.value = value;
+      });
+    });
   }
+
+  Widget buildGroupCheckbox(CheckBoxState checkbox) => CheckboxListTile(
+      controlAffinity: ListTileControlAffinity.leading,
+      title: Text(checkbox.title),
+      value: checkbox.value,
+      onChanged: tooglePressed);
 }

@@ -1,5 +1,5 @@
 class CheckBoxState {
-  final String title;
+  String title;
   bool value;
 
   CheckBoxState({
